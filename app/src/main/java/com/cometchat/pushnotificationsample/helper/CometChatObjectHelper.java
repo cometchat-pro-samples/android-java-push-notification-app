@@ -2,38 +2,59 @@ package com.cometchat.pushnotificationsample.helper;
 
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.cometchat.chat.helpers.CometChatHelper;
-import com.cometchat.chat.models.BaseMessage;
+import com.cometchat.chat.constants.CometChatConstants;
+import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.exceptions.CometChatException;
 import com.cometchat.chat.models.Group;
 import com.cometchat.chat.models.User;
-import com.google.gson.JsonObject;
+import com.cometchat.pushnotificationsample.R;
 
 import org.json.JSONObject;
 
 public class CometChatObjectHelper {
-
-    public static void process(Intent intent, final CometChatObjectCallback listener){
+    public static void process(Intent intent, final CometChatObjectCallback listener) {
         try {
-            Log.e("CometChatObjectHelper", "===>>>: process: 1: " + intent);
-            String notificationPayload = intent.getStringExtra("notification_payload");
-            if(TextUtils.isEmpty(notificationPayload)){
+            String notificationPayload = intent.getStringExtra(ConstantFile.IntentStrings.NOTIFICATION_PAYLOAD);
+            if (TextUtils.isEmpty(notificationPayload)) {
                 listener.onNoMessage();
-            }else{
+            } else {
                 JSONObject jsonObject = new JSONObject(notificationPayload);
-                Log.e("CometChatObjectHelper", "===>>>: process: 2: " + notificationPayload);
-                if (jsonObject.has("uid")){
-                    User user = User.fromJson(notificationPayload);
-                    listener.onUserMessage(user);
-                } else if (jsonObject.has("guid")){
-                    Group group = Group.fromJson(notificationPayload);
-                    listener.onGroupMessage(group);
+                String type = jsonObject.getString(ConstantFile.IntentStrings.RECEIVER_TYPE);
+                String msgtype = jsonObject.getString(ConstantFile.IntentStrings.TYPE);
+                if (!msgtype.equals(CometChatConstants.CATEGORY_CALL)) {
+                    if (type.equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+                        String uid = jsonObject.getString(ConstantFile.IntentStrings.SENDER);
+
+                        CometChat.getUser(uid, new CometChat.CallbackListener<User>() {
+                            @Override
+                            public void onSuccess(User user) {
+                                listener.onUserMessage(user);
+                            }
+
+                            @Override
+                            public void onError(CometChatException e) {
+                            }
+                        });
+
+                    } else {
+                        String guid = jsonObject.getString(ConstantFile.IntentStrings.RECEIVER);
+
+                        CometChat.getGroup(guid, new CometChat.CallbackListener<Group>() {
+                            @Override
+                            public void onSuccess(Group group) {
+                                listener.onGroupMessage(group);
+                            }
+
+                            @Override
+                            public void onError(CometChatException e) {
+                            }
+                        });
+                    }
                 }
             }
-        }catch (Exception e){
-            Log.e("CometChatObjectHelper", "===>>>: Error: " + e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
 }

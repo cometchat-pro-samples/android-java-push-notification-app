@@ -3,6 +3,7 @@ package com.cometchat.pushnotificationsample;
 import static android.content.Context.TELECOM_SERVICE;
 
 import android.Manifest;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,7 +14,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,26 +25,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.cometchat.chat.constants.CometChatConstants;
 import com.cometchat.chat.core.Call;
-import com.cometchat.chat.core.CallManager;
 import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.core.CometChatNotifications;
+import com.cometchat.chat.enums.PushPlatforms;
 import com.cometchat.chat.exceptions.CometChatException;
-import com.cometchat.chat.models.Action;
-import com.cometchat.chat.models.BaseMessage;
-import com.cometchat.chat.models.CustomMessage;
+import com.cometchat.chat.models.AppEntity;
 import com.cometchat.chat.models.Group;
-import com.cometchat.chat.models.MediaMessage;
-import com.cometchat.chat.models.TextMessage;
 import com.cometchat.chat.models.User;
 import com.cometchat.pushnotificationsample.helper.ConstantFile;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,8 +43,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,8 +52,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
 
 public class CometChatNotification {
     private static final String TAG = CometChatNotification.class.getSimpleName();
@@ -72,13 +60,13 @@ public class CometChatNotification {
     private static CometChatNotification cometChatNotification;
     private static NotificationManager notificationManager;
     private static TelecomManager telecomManager;
-    private static ComponentName componentName;
     private static PhoneAccountHandle phoneAccountHandle;
 
-    private CometChatNotification() {}
+    private CometChatNotification() {
+    }
 
     public static CometChatNotification getInstance(Context c) {
-        if(cometChatNotification == null) {
+        if (cometChatNotification == null) {
             cometChatNotification = new CometChatNotification();
             context = c;
             notificationManager = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -88,8 +76,7 @@ public class CometChatNotification {
             ComponentName componentName = new ComponentName(context, CallConnectionService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 phoneAccountHandle = new PhoneAccountHandle(componentName, context.getPackageName());
-                PhoneAccount phoneAccount = PhoneAccount.builder(phoneAccountHandle, context.getPackageName())
-                        .setCapabilities(PhoneAccount.CAPABILITY_CALL_PROVIDER).build();
+                PhoneAccount phoneAccount = PhoneAccount.builder(phoneAccountHandle, context.getPackageName()).setCapabilities(PhoneAccount.CAPABILITY_CALL_PROVIDER).build();
                 telecomManager.registerPhoneAccount(phoneAccount);
             }
         }
@@ -97,9 +84,9 @@ public class CometChatNotification {
     }
 
 
-    public void registerCometChatNotification(final CometChat.CallbackListener<String> listener){
-        if(!isFirebaseAppInitialized()){
-            listener.onError(new CometChatException("Notifications Not Registered","FireBase App Not Initialized"));
+    public void registerCometChatNotification(final CometChat.CallbackListener<String> listener) {
+        if (!isFirebaseAppInitialized()) {
+            listener.onError(new CometChatException(ConstantFile.ErrorStrings.NOTIFICATION_NOT_REGISTERED, ConstantFile.ErrorStrings.FIREBASE_NOT_REGISTERED));
             return;
         }
 
@@ -107,21 +94,19 @@ public class CometChatNotification {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 if (!task.isSuccessful()) {
-                    Log.e(TAG, "Fetching FCM registration token failed", task.getException());
+                    Log.e(TAG, context.getString(R.string.cometchat_fcmtoken_failed), task.getException());
                     return;
                 }
                 String token = task.getResult();
-                Log.e(TAG, "Push Notification Token = "+token);
-                CometChat.registerTokenForPushNotification(token, new CometChat.CallbackListener<String>() {
+                Log.i(TAG, "Push Notification Token = " + token);
+                CometChatNotifications.registerPushToken(token, PushPlatforms.FCM_ANDROID, "YOUR_PROVIDER_ID", new CometChat.CallbackListener<String>() {
                     @Override
                     public void onSuccess(String s) {
-                        Log.e(TAG, "onSuccess:  CometChat Notification Registered : "+s );
                         listener.onSuccess(s);
                     }
 
                     @Override
                     public void onError(CometChatException e) {
-                        Log.e(TAG, "onError: Notification Registration Failed : "+e.getMessage());
                         listener.onError(e);
                     }
                 });
@@ -129,69 +114,69 @@ public class CometChatNotification {
         });
     }
 
-    public void renderCometChatNotification(RemoteMessage remoteMessage, final CometChat.CallbackListener<String> listener){
+    public void renderCometChatNotification(RemoteMessage remoteMessage, final CometChat.CallbackListener<String> listener) {
         JSONObject data = new JSONObject(remoteMessage.getData());
-        Log.e(TAG, "renderCometChatNotification: Data "+data );
-        if(!data.has(CometChatConstants.CATEGORY_MESSAGE)){
-            listener.onError(new CometChatException("Error","Not a CometChat Notification Data Payload"));
-            return;
-        }
 
         try {
-            JSONObject rawMessageJson = new JSONObject(data.getString(CometChatConstants.CATEGORY_MESSAGE));
-            BaseMessage baseMessage = getBaseMessage(rawMessageJson);
-            Log.e(TAG, "renderCometChatNotification: BaseMessageType"+baseMessage.getType());
-
-            switch (Objects.requireNonNull(baseMessage).getType()){
-                case CometChatConstants.MESSAGE_TYPE_TEXT:
-                    TextMessage textMessage = TextMessage.fromJson(rawMessageJson);
-                    renderTextMessageNotification(textMessage);
+            switch (data.getString(ConstantFile.IntentStrings.TYPE)) {
+                case ConstantFile.IntentStrings.CHAT:
+                    renderTextMessageNotification(data);
                     break;
 
-                case CometChatConstants.MESSAGE_TYPE_VIDEO:
-                    Log.e(TAG, "renderCometChatNotification: Video Call Received");
-                    Call videoCallObject = Call.fromJson(rawMessageJson.toString());
-                    handleCallNotification(videoCallObject);
-                    break;
-
-                case CometChatConstants.MESSAGE_TYPE_AUDIO:
-                    Log.e(TAG, "renderCometChatNotification: Audio Call Received");
-                    Call audioCallObject = Call.fromJson(rawMessageJson.toString());
-                    handleCallNotification(audioCallObject);
+                case CometChatConstants.CATEGORY_CALL:
+                    handleCallNotification(data);
                     break;
                 default:
             }
 
 
         } catch (JSONException e) {
-            Log.e(TAG,"Render Exception : "+e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public boolean isCometChatNotification(RemoteMessage remoteMessage){
-        JSONObject data = new JSONObject(remoteMessage.getData());
-        if(data.has(CometChatConstants.CATEGORY_MESSAGE)){
-            return true;
-        }else{
-            return false;
+    private void handleCallNotification(JSONObject data) {
+
+        try {
+            long callTime = Long.parseLong(data.getString(ConstantFile.IntentStrings.SENT_AT));
+            if (data.getString(ConstantFile.IntentStrings.CALL_ACTION).equals(CometChatConstants.CALL_STATUS_INITIATED) && System.currentTimeMillis() <= (callTime + 30000)) {
+                Call call = new Call(data.getString(ConstantFile.IntentStrings.RECEIVER), data.getString(ConstantFile.IntentStrings.RECEIVER_TYPE), data.getString(ConstantFile.IntentStrings.CALL_TYPE));
+                call.setSessionId(data.getString(ConstantFile.IntentStrings.SESSION_ID));
+                if (data.getString(ConstantFile.IntentStrings.RECEIVER_TYPE).equals(CometChatConstants.RECEIVER_TYPE_USER)) {
+                    User user = new User();
+                    user.setUid(data.getString(ConstantFile.IntentStrings.RECEIVER));
+                    user.setName(data.getString(ConstantFile.IntentStrings.RECEIVER_NAME));
+                    user.setAvatar(data.getString(ConstantFile.IntentStrings.RECEIVER_AVATAR));
+                    call.setCallInitiator(user);
+                    call.setCallReceiver(user);
+                } else {
+                    Group group = new Group();
+                    group.setGuid(data.getString(ConstantFile.IntentStrings.RECEIVER));
+                    group.setName(data.getString(ConstantFile.IntentStrings.RECEIVER_NAME));
+                    group.setIcon(data.getString(ConstantFile.IntentStrings.RECEIVER_AVATAR));
+                    call.setCallInitiator(group);
+                    call.setCallReceiver(group);
+                }
+                startIncomingCall(call);
+            } else {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telecomManager != null) {
+                    boolean isInCall = telecomManager.isInCall();
+                    if (isInCall) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            telecomManager.endCall();
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void handleCallNotification(Call call){
-        Log.e(TAG, "handleCallNotification: Called ::");
-        /*String uid = CometChat.getLoggedInUser().getUid();
-        if(call.getCallReceiver() instanceof User && ((User) call.getCallReceiver()).getUid().equals(uid)){
-            startIncomingCall(call);
-        }*/
-        startIncomingCall(call);
-    }
-
-    private void registerConnectionService(){
-        //For VOIP
-
-    }
 
     public void startIncomingCall(Call call) {
+        AppEntity entity = call.getCallInitiator();
+
         if (context.checkSelfPermission(Manifest.permission.MANAGE_OWN_CALLS) == PackageManager.PERMISSION_GRANTED) {
             Bundle extras = new Bundle();
             Uri uri = Uri.fromParts(PhoneAccount.SCHEME_TEL, call.getSessionId().substring(0, 11), null);
@@ -200,16 +185,16 @@ public class CometChatNotification {
             extras.putString(ConstantFile.IntentStrings.TYPE, call.getReceiverType());
             extras.putString(ConstantFile.IntentStrings.CALL_TYPE, call.getType());
 
-            if(call.getCallInitiator() instanceof User){
-                extras.putString(ConstantFile.IntentStrings.NAME, ((User)call.getReceiver()).getName());
-            }else{
-                extras.putString(ConstantFile.IntentStrings.NAME, ((Group)call.getReceiver()).getName());
+            if (entity instanceof User) {
+                extras.putString(ConstantFile.IntentStrings.NAME, ((User) entity).getName());
+            } else {
+                extras.putString(ConstantFile.IntentStrings.NAME, ((Group) entity).getName());
             }
 
-            if(call.getCallReceiver() instanceof User){
-                extras.putString(ConstantFile.IntentStrings.ID, ((User)call.getReceiver()).getUid());
-            }else{
-                extras.putString(ConstantFile.IntentStrings.ID, ((Group)call.getReceiver()).getGuid());
+            if (entity instanceof User) {
+                extras.putString(ConstantFile.IntentStrings.ID, ((User) entity).getUid());
+            } else {
+                extras.putString(ConstantFile.IntentStrings.ID, ((Group) entity).getGuid());
             }
 
             if (call.getType().equalsIgnoreCase(CometChatConstants.CALL_TYPE_VIDEO)) {
@@ -229,32 +214,28 @@ public class CometChatNotification {
             } catch (SecurityException e) {
                 e.printStackTrace();
             } catch (Exception e) {
-                Log.e("CallManagerError: ", e.getMessage());
             }
         }
     }
 
-    private void renderTextMessageNotification(TextMessage message){
-        Log.e(TAG, "renderTextMessageNotification: "+message.toString());
-        Log.e(TAG, "renderTextMessageNotification: Receiver type = "+message.getReceiverType());
-        Log.e(TAG, "renderTextMessageNotification: Receiver type = "+message.getReceiver());
+    private void renderTextMessageNotification(JSONObject message) {
+        try {
+            if (message.getString(ConstantFile.IntentStrings.RECEIVER_TYPE).equals(CometChatConstants.RECEIVER_TYPE_USER)) {
 
-        if(message.getReceiverType().equals(CometChatConstants.RECEIVER_TYPE_USER)){
-            showNotification(
-                    message.getId(),
-                    message.getSender().getName(),
-                    message.getText(),
-                    message.getSender().getAvatar(),
-                    message.getSender().toJson()
-            );
-        }else{
-            showNotification(
-                    message.getId(),
-                    ((Group)message.getReceiver()).getName(),
-                    message.getText(),
-                    ((Group)message.getReceiver()).getIcon(),
-                    groupToJson((Group)(message.getReceiver()))
-            );
+                if (message.has(ConstantFile.IntentStrings.SENDER_AVATAR)) {
+                    showNotification(message.getInt(ConstantFile.IntentStrings.TAG), message.getString(ConstantFile.IntentStrings.SENDER_NAME), message.getString(ConstantFile.IntentStrings.BODY), message.getString(ConstantFile.IntentStrings.SENDER_AVATAR), message);
+                } else {
+                    showNotification(message.getInt(ConstantFile.IntentStrings.TAG), message.getString(ConstantFile.IntentStrings.SENDER_NAME), message.getString(ConstantFile.IntentStrings.BODY), "", message);
+                }
+            } else {
+                if (message.has(ConstantFile.IntentStrings.SENDER_AVATAR)) {
+                    showNotification(message.getInt(ConstantFile.IntentStrings.TAG), message.getString(ConstantFile.IntentStrings.RECEIVER_NAME), message.getString(ConstantFile.IntentStrings.BODY), message.getString(ConstantFile.IntentStrings.SENDER_AVATAR), message);
+                } else {
+                    showNotification(message.getInt(ConstantFile.IntentStrings.TAG), message.getString(ConstantFile.IntentStrings.RECEIVER_NAME), message.getString(ConstantFile.IntentStrings.BODY), "", message);
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -262,7 +243,7 @@ public class CometChatNotification {
     public boolean checkAccountConnection(Context context) {
         boolean isConnected = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telecomManager!=null) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telecomManager != null) {
                 final List<PhoneAccountHandle> enabledAccounts = telecomManager.getCallCapablePhoneAccounts();
                 for (PhoneAccountHandle account : enabledAccounts) {
                     if (account.getComponentName().getClassName().equals(CallConnectionService.class.getCanonicalName())) {
@@ -275,45 +256,40 @@ public class CometChatNotification {
         return isConnected;
     }
 
-    private void showNotification(int nid, String title ,String text ,String largeIconUrl ,JSONObject payload){
+    private void showNotification(int nid, String title, String text, String largeIconUrl, JSONObject payload) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("Messages", title, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("You messages!!");
+            NotificationChannel channel = new NotificationChannel(ConstantFile.IntentStrings.MESSAGES, title, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Your messages!!");
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
-        // Get the notification manager
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // Create the notification builder
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Messages");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ConstantFile.IntentStrings.MESSAGES);
         builder.setContentTitle(title);
         builder.setContentText(text);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setAutoCancel(true);
 
-        if(!TextUtils.isEmpty(largeIconUrl)){
+        if (!TextUtils.isEmpty(largeIconUrl)) {
             builder.setLargeIcon(getBitmapFromURL(largeIconUrl));
-        }else{
+        } else {
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_background));
         }
 
-        // Create the pending intent
-        Log.e(TAG, "showNotification: Payload = "+payload);
         Intent intent = new Intent(context, HomeScreenActivity.class);
-        intent.putExtra("notification_payload",payload.toString());
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 501, intent, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
+
+        intent.putExtra(ConstantFile.IntentStrings.NOTIFICATION_PAYLOAD, payload.toString());
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 501, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
-        // show the notification
-        notificationManager.notify(nid, builder.build());
+        Notification notification = builder.build();
+        notificationManager.notify(nid, notification);
     }
 
-    private static boolean isFirebaseAppInitialized(){
-        if(FirebaseApp.getApps(context).isEmpty()){
-            return false;
-        }else{
-            return true;
-        }
+    private static boolean isFirebaseAppInitialized() {
+        return !FirebaseApp.getApps(context).isEmpty();
     }
 
     private Bitmap getBitmapFromURL(String strURL) {
@@ -332,49 +308,5 @@ public class CometChatNotification {
         } else {
             return null;
         }
-    }
-
-    private JSONObject groupToJson(Group group){
-        JSONObject groupObject = new JSONObject();
-        try {
-            groupObject.put(Group.COLUMN_GUID,group.getGuid());
-            groupObject.put(Group.COLUMN_NAME,group.getName());
-            groupObject.put(Group.COLUMN_GROUP_TYPE,group.getGroupType());
-            groupObject.put(Group.COLUMN_PASSWORD,group.getPassword());
-            groupObject.put(Group.COLUMN_ICON,group.getIcon());
-            groupObject.put(Group.COLUMN_DESCRIPTION,group.getDescription());
-            groupObject.put(Group.COLUMN_OWNER,group.getOwner());
-            groupObject.put(Group.COLUMN_METADATA,group.getMetadata());
-            groupObject.put(Group.COLUMN_CREATED_AT,group.getCreatedAt());
-            groupObject.put(Group.COLUMN_UPDATED_AT,group.getUpdatedAt());
-            groupObject.put(Group.COLUMN_HAS_JOINED,group.getJoinedAt());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        return groupObject;
-    }
-    private BaseMessage getBaseMessage(JSONObject messageObject) throws JSONException {
-        if (messageObject.has(CometChatConstants.MessageKeys.KEY_MESSAGE_CATEGORY)) {
-            String category = messageObject.getString(CometChatConstants.MessageKeys.KEY_MESSAGE_CATEGORY);
-            if (category.equalsIgnoreCase(CometChatConstants.CATEGORY_MESSAGE)) {
-                if (messageObject.has(CometChatConstants.MessageKeys.KEY_SEND_MESSAGE_TYPE)) {
-                    String type = messageObject.getString(CometChatConstants.MessageKeys.KEY_SEND_MESSAGE_TYPE);
-                    if (type.equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_TEXT)) {
-                        return TextMessage.fromJson(messageObject);
-                    } else if (type.equalsIgnoreCase(CometChatConstants.MESSAGE_TYPE_CUSTOM)) {
-                        return CustomMessage.fromJson(messageObject);
-                    } else {
-                        return MediaMessage.fromJson(messageObject);
-                    }
-                }
-            } else if (category.equalsIgnoreCase(CometChatConstants.CATEGORY_ACTION)) {
-                return Action.fromJson(messageObject);
-            } else if (category.equalsIgnoreCase(CometChatConstants.CATEGORY_CALL)) {
-                return Call.fromJson(messageObject.toString());
-            } else if (category.equalsIgnoreCase(CometChatConstants.CATEGORY_CUSTOM)) {
-                return CustomMessage.fromJson(messageObject);
-            }
-        }
-        return null;
     }
 }

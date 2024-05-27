@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,10 +24,10 @@
             android:textStyle="bold" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvDes1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvTitle"
-            android:id="@+id/tvDes1"
             android:layout_marginStart="16dp"
             android:padding="4dp"
             android:text="Welcome to CometChat"
@@ -36,10 +36,10 @@
             android:textStyle="bold" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvDes2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvDes1"
-            android:id="@+id/tvDes2"
             android:layout_marginStart="16dp"
             android:padding="4dp"
             android:text="Please Enter UID to Continue"
@@ -48,13 +48,14 @@
             android:textStyle="bold" />
 
         <RelativeLayout
-            android:animateLayoutChanges="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tvDes2"
             android:layout_marginStart="32dp"
             android:layout_marginTop="56dp"
             android:layout_marginEnd="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:animateLayoutChanges="true">
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputUID"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -77,41 +78,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:maxLines="1"
-                    android:inputType="text"
                     android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:textColor="@color/primaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <ProgressBar
                 android:id="@+id/loginProgress"
-                android:visibility="gone"
-                android:indeterminateTint="@color/primaryTextColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/inputUID"
                 android:layout_alignBottom="@+id/inputUID"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:indeterminateTint="@color/primaryTextColor"
+                android:visibility="gone" />
 
         </RelativeLayout>
+
         <LinearLayout
-            android:gravity="center"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_height="wrap_content">
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
-                android:text="Don't have any users?"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="Don't have any users?" />
+
             <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:text="Create Now"
                 android:id="@+id/create_user"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_height="wrap_content"/>
+                android:text="Create Now"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary" />
         </LinearLayout>
     </RelativeLayout>
 
