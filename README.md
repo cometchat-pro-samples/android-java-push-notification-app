@@ -7,7 +7,7 @@
 The CometChat Android [Push Notifications (Extension)](https://www.cometchat.com/docs-beta/extensions/android-connection-service) Sample App is a fully functional push notifications app capable of one-on-one (private) and group messaging, and Calling. This sample app enables users to send and receive push notifications for text and multimedia messages like **images, videos, documents** and **Custom Messages**. Also, users can make push notifications for Audio and Video calls to other users or groups.
 
 > [!NOTE]
-> If you use Enhanced Push Notifications, please refer to our [Android Enhanced Push Notifications (Beta)](https://github.com/cometchat/cometchat-push-notification-app-android) Sample app for guidance.
+> If you wish to try Enhanced Push Notifications, please refer to our [Android Enhanced Push Notifications (Beta)](https://github.com/cometchat/cometchat-push-notification-app-android) sample app.
 
 ## Pre-requisite :star:
 
