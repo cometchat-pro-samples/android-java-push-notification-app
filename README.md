@@ -9,7 +9,7 @@ The CometChat Android [Enhanced Push Notifications (Beta)](https://www.cometchat
 The sample app uses Firebase Cloud Messaging (FCM) for delivering push notifications to Android.
 
 > [!NOTE]
-> If you use Push Notifications (Extension), please refer to our [Android Push Notifications (Extension)](https://github.com/cometchat/cometchat-push-notification-app-android/tree/v4-push-notifications-extension) Sample app for guidance.
+> If you are using Push Notifications (Extension), please refer to our [Android Push Notifications (Extension)](https://github.com/cometchat/cometchat-push-notification-app-android/tree/v4-push-notifications-extension) sample app.
 
 ## Pre-requisite
 
