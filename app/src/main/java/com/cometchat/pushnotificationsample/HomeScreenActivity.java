@@ -65,7 +65,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<String> task) {
                 if (task.isSuccessful()) {
                     String pushToken = task.getResult();
-                    CometChatNotifications.registerPushToken(pushToken, PushPlatforms.FCM_ANDROID, "YOUR_PROVIDER_ID", new CometChat.CallbackListener<String>() {
+                    CometChatNotifications.registerPushToken(pushToken, PushPlatforms.FCM_ANDROID, AppConfig.AppDetails.FCM_PROVIDER_ID, new CometChat.CallbackListener<String>() {
                         @Override
                         public void onSuccess(String s) {
                             Log.v(TAG, "onSuccess:  CometChat Notification Registered : " + s);

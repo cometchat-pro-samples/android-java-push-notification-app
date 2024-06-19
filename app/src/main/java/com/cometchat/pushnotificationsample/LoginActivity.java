@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cometchat.chat.core.CometChat;
@@ -21,9 +22,9 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    TextInputEditText edtUID;
-    TextInputLayout inputLayout;
-    ProgressBar progressBar;
+    private TextInputLayout inputLayout;
+    private ProgressBar progressBar;
+    private TextInputEditText uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,31 +36,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        edtUID = findViewById(R.id.etUID);
-        inputLayout = findViewById(R.id.inputUID);
+        uid = findViewById(R.id.etUID);
         progressBar = findViewById(R.id.loginProgress);
+        inputLayout = findViewById(R.id.inputUID);
 
-        inputLayout.setEndIconOnClickListener(v -> {
-            if (Objects.requireNonNull(edtUID.getText()).toString().isEmpty()) {
-                Toast.makeText(LoginActivity.this, R.string.cometchat_fill_username, Toast.LENGTH_LONG).show();
-            } else {
-                progressBar.setVisibility(View.VISIBLE);
-                inputLayout.setEndIconVisible(false);
-                login(edtUID.getText().toString());
-            }
-        });
-
-        edtUID.setOnEditorActionListener((textView, i, keyEvent) -> {
+        uid.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
-                if (edtUID.getText().toString().isEmpty()) {
-                    Toast.makeText(LoginActivity.this, R.string.cometchat_fill_username, Toast.LENGTH_LONG).show();
+                if (uid.getText().toString().isEmpty()) {
+                    uid.setError("Enter UID");
                 } else {
+                    uid.setError(null);
                     progressBar.setVisibility(View.VISIBLE);
                     inputLayout.setEndIconVisible(false);
-                    login(edtUID.getText().toString());
+                    login(uid.getText().toString());
                 }
             }
             return true;
+        });
+
+
+        findViewById(R.id.tvSignIn).setOnClickListener(view -> {
+            if (uid.getText().toString().isEmpty()) {
+                uid.setError("Enter UID");
+            } else {
+                findViewById(R.id.loginProgress).setVisibility(View.VISIBLE);
+                inputLayout.setEndIconVisible(false);
+                login(uid.getText().toString());
+            }
         });
     }
 
@@ -87,6 +90,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void createUser(View view) {
+        startActivity(new Intent(LoginActivity.this, CreateUserActivity.class));
+    }
     private void initCometChatUIKit() {
         UIKitSettings uiKitSettings = new UIKitSettings.UIKitSettingsBuilder().setRegion(AppConfig.AppDetails.REGION).setAppId(AppConfig.AppDetails.APP_ID).setAuthKey(AppConfig.AppDetails.AUTH_KEY).subscribePresenceForAllUsers().build();
 

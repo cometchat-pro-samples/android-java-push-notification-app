@@ -99,7 +99,7 @@ public class CometChatNotification {
                 }
                 String token = task.getResult();
                 Log.i(TAG, "Push Notification Token = " + token);
-                CometChatNotifications.registerPushToken(token, PushPlatforms.FCM_ANDROID, "YOUR_PROVIDER_ID", new CometChat.CallbackListener<String>() {
+                CometChatNotifications.registerPushToken(token, PushPlatforms.FCM_ANDROID, AppConfig.AppDetails.FCM_PROVIDER_ID, new CometChat.CallbackListener<String>() {
                     @Override
                     public void onSuccess(String s) {
                         listener.onSuccess(s);

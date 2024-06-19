@@ -12,5 +12,8 @@
     <string name="cometchat_android_telecom_package">com.android.server.telecom</string>
     <string name="cometchat_android_telecom_package_class">"com.android.server.telecom.settings.EnableAccountPreferenceActivity"</string>
     <string name="cometchat_VoIP_message">To make VoIP Calling work properly, you need to allow certain permission from your call account settings for this app.</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="no_sample_users_available">No sample users available</string>
+    <string name="fill_this_field">Fill this field</string>
 
 </resources>
