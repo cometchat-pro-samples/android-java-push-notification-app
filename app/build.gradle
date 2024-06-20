@@ -11,8 +11,8 @@ android {
         applicationId "com.cometchat.pushnotificationsample"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [file_provider: "com.cometchat.pushnotificationsample"]
@@ -49,7 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:21.1.1'
 
     //CometChat Dependencies
-    implementation 'com.cometchat:chat-uikit-android:4.0.2'
+    implementation 'com.cometchat:chat-uikit-android:4.3.11'
     implementation 'com.cometchat:calls-sdk-android:4.0.0'
 
 

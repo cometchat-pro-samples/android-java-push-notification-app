@@ -109,6 +109,7 @@
                 android:text="Create Now"
                 android:id="@+id/create_user"
                 android:textAllCaps="true"
+                android:onClick="launchSignupActivity"
                 android:textColor="@color/colorPrimary"
                 android:layout_marginLeft="8dp"
                 android:layout_height="wrap_content"/>

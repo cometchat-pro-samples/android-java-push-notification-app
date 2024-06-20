@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CometChatPushNotificationSample</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="no_sample_users_available">No sample users available</string>
+    <string name="fill_this_field">Fill this field</string>
 </resources>

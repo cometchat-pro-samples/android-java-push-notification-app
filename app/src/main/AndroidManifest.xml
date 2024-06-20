@@ -28,9 +28,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CometChatPushNotificationSample"
         tools:targetApi="31">
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CreateUserActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashScreenActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,8 +49,7 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".HomeScreenActivity"
             android:exported="false" />
@@ -64,7 +70,8 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".CallEventReceiver"
+        <receiver
+            android:name=".CallEventReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="CometChat_Call_Event" />
