@@ -36,7 +36,8 @@
     <string name="enter_guid">Enter GUID here</string>
     <string name="call_initated_success">Call Initiated Successfully</string>
     <string name="call_initated_error">Failed to initiate the Call</string>
-    <string name="please_wait">Please Wait</string>
+    <string name="please_wait">Please wait...</string>
     <string name="media_uploading">Media is getting Uploaded</string>
+    <string name="no_sample_users_available">No sample users available.</string>
 
 </resources>

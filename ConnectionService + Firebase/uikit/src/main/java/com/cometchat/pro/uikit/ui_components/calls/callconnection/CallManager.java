@@ -1,5 +1,7 @@
 package com.cometchat.pro.uikit.ui_components.calls.callconnection;
 
+import static android.content.Context.TELECOM_SERVICE;
+
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -9,14 +11,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telecom.VideoProfile;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -26,21 +25,13 @@ import androidx.core.content.ContextCompat;
 
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.Call;
-import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.exceptions.CometChatException;
 import com.cometchat.pro.models.Group;
 import com.cometchat.pro.models.User;
-import com.cometchat.pro.uikit.BuildConfig;
 import com.cometchat.pro.uikit.R;
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatCallActivity;
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants;
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static android.content.Context.TELECOM_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
 
 public class CallManager {
 

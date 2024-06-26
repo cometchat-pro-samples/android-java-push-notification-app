@@ -2,6 +2,7 @@ package com.cometchat.pro.uikit.ui_components.shared.cometchatConversations;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Filter;
 
 import com.cometchat.pro.models.Conversation;
 import com.cometchat.pro.models.MessageReceipt;
@@ -24,27 +25,26 @@ public class CometChatConversationsViewModel {
     }
 
     private CometChatConversationsAdapter getAdapter(){
-       if (conversationListAdapter==null){
-           conversationListAdapter=new CometChatConversationsAdapter(context);
-       }
-       return conversationListAdapter;
+        if (conversationListAdapter==null){
+            conversationListAdapter=new CometChatConversationsAdapter(context);
+        }
+        return conversationListAdapter;
     }
 
     public void add(Conversation conversation){
         if (conversationListAdapter!=null)
             conversationListAdapter.add(conversation);
     }
-
     private void setAdapter(CometChatConversations cometChatConversationList){
         if (conversationListAdapter==null)
-           conversationListAdapter=new CometChatConversationsAdapter(context);
+            conversationListAdapter=new CometChatConversationsAdapter(context);
         cometChatConversationList.setAdapter(conversationListAdapter);
     }
 
 
     public void setConversationList(List<Conversation> conversationList) {
         if (conversationListAdapter!=null) {
-                conversationListAdapter.updateList(conversationList);
+            conversationListAdapter.updateList(conversationList);
         }
         else
         {
@@ -63,9 +63,9 @@ public class CometChatConversationsViewModel {
             conversationListAdapter.remove(conversation);
     }
 
-    public void searchConversation(String searchString) {
+    public void searchConversation(String searchString, Filter.FilterListener filterListener) {
         if (conversationListAdapter!=null)
-            conversationListAdapter.getFilter().filter(searchString);
+            conversationListAdapter.getFilter().filter(searchString,filterListener);
     }
 
     public void setDeliveredReceipts(MessageReceipt messageReceipt) {

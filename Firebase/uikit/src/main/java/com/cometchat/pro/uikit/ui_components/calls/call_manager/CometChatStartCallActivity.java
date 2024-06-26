@@ -87,7 +87,7 @@ public class CometChatStartCallActivity extends AppCompatActivity {
         if (type!=null && type.equalsIgnoreCase(CometChatConstants.RECEIVER_TYPE_USER))
             callSettings = new CallSettings.CallSettingsBuilder(this,mainView)
                     .setSessionId(sessionID)
-                    .setMode(CallSettings.MODE_SINGLE)
+                    .setMode(CallSettings.MODE_DEFAULT)
                     .build();
         else
             callSettings = new CallSettings.CallSettingsBuilder(this,mainView)
@@ -97,6 +97,26 @@ public class CometChatStartCallActivity extends AppCompatActivity {
         CometChatError.init(this);
         Log.e( "startCallActivity: ",sessionID+" "+type);
         CometChat.startCall(callSettings, new CometChat.OngoingCallListener() {
+            @Override
+            public void onRecordingStarted(User user) {
+
+            }
+
+            @Override
+            public void onRecordingStopped(User user) {
+
+            }
+
+            @Override
+            public void onUserMuted(User user, User user1) {
+
+            }
+
+            @Override
+            public void onCallSwitchedToVideo(String s, User user, User user1) {
+
+            }
+
             @Override
             public void onUserListUpdated(List<User> list) {
                 Log.e( "onUserListUpdated: ",list.toString() );

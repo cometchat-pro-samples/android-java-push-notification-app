@@ -1,9 +1,7 @@
 package com.cometchat.pro.uikit.ui_components.calls.callconnection;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import static android.telecom.TelecomManager.PRESENTATION_ALLOWED;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,12 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.cometchat.pro.core.Call;
-import com.cometchat.pro.core.CometChat;
-import com.cometchat.pro.exceptions.CometChatException;
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatStartCallActivity;
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants;
-
-import static android.telecom.TelecomManager.PRESENTATION_ALLOWED;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class MyConnectionService extends ConnectionService {

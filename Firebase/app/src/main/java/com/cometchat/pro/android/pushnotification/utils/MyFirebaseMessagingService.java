@@ -18,7 +18,6 @@ import androidx.core.app.Person;
 import androidx.core.graphics.drawable.IconCompat;
 
 import com.cometchat.pro.android.pushnotification.R;
-import com.cometchat.pro.android.pushnotification.UIKitApplication;
 import com.cometchat.pro.android.pushnotification.constants.AppConfig;
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.Call;
@@ -192,8 +191,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     builder.addAction(0, "Answers", PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, getCallIntent("Answers"), PendingIntent.FLAG_UPDATE_CURRENT));
                     builder.addAction(0, "Decline", PendingIntent.getBroadcast(getApplicationContext(), 1, getCallIntent("Decline"), PendingIntent.FLAG_UPDATE_CURRENT));
                 }
-                if (UIKitApplication.isBackground)
-                    notificationManager.notify(05,builder.build());
+                notificationManager.notify(05,builder.build());
             }
             else {
 //                Person person = createPerson(baseMessage);

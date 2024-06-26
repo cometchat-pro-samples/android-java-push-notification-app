@@ -2,7 +2,6 @@ package com.cometchat.pro.android.pushnotification;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import com.cometchat.pro.android.pushnotification.utils.MyFirebaseMessagingService;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.exceptions.CometChatException;
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -26,7 +24,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class MoreActionFragment extends BottomSheetDialogFragment {
 
     private TextView loggedInUser;
-    private TextView launchUI;
     private TextView logout;
     private String TAG = "MoreAction";
 
@@ -73,14 +70,6 @@ public class MoreActionFragment extends BottomSheetDialogFragment {
                         Log.e(TAG, "onError: " + e.getMessage());
                     }
                 });
-            }
-        });
-
-        launchUI = view.findViewById(R.id.launch_ui_kit);
-        launchUI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), CometChatUI.class));
             }
         });
         return view;

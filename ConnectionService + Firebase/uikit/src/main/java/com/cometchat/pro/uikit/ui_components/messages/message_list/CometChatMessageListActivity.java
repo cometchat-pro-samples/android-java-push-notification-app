@@ -20,7 +20,6 @@ import androidx.emoji.text.EmojiCompat;
 import androidx.fragment.app.Fragment;
 
 import com.cometchat.pro.constants.CometChatConstants;
-import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.models.BaseMessage;
 import com.cometchat.pro.uikit.R;
 
@@ -30,21 +29,23 @@ import java.util.Locale;
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants;
 import com.cometchat.pro.uikit.ui_components.messages.message_actions.listener.MessageActionCloseListener;
 import com.cometchat.pro.uikit.ui_components.messages.message_actions.listener.OnMessageLongClick;
-import com.cometchat.pro.uikit.ui_resources.utils.Utils;
 import com.cometchat.pro.uikit.ui_settings.FeatureRestriction;
 
 /**
+
  * Purpose - CometChatMessageListActivity.class is a Activity used to display messages using CometChatMessageScreen.class. It takes
- * parameter like TYPE to differentiate between User MessageScreen & Group MessageScreen.
- * <p>
- * It passes parameters like UID (userID) ,AVATAR (userAvatar) ,NAME (userName) ,STATUS (userStatus) to CometChatMessageScreen.class
- * if TYPE is CometChatConstant.RECEIVER_TYPE_USER
- * <p>
- * It passes parameters like GUID (groupID) ,AVATAR (groupIcon) ,NAME (groupName) ,GROUP_OWNER (groupOwner) to CometChatMessageScreen.class
- * if TYPE is CometChatConstant.RECEIVER_TYPE_GROUP
- *
- * @see com.cometchat.pro.constants.CometChatConstants
- * @see CometChatMessageList
+ parameter like TYPE to differentiate between User MessageScreen & Group MessageScreen.
+
+ It passes parameters like UID (userID) ,AVATAR (userAvatar) ,NAME (userName) ,STATUS (userStatus) to CometChatMessageScreen.class
+ if TYPE is CometChatConstant.RECEIVER_TYPE_USER
+
+ It passes parameters like GUID (groupID) ,AVATAR (groupIcon) ,NAME (groupName) ,GROUP_OWNER (groupOwner) to CometChatMessageScreen.class
+ if TYPE is CometChatConstant.RECEIVER_TYPE_GROUP
+
+ @see com.cometchat.pro.constants.CometChatConstants
+ @see CometChatMessageList
+
+
  */
 
 public class CometChatMessageListActivity extends AppCompatActivity implements MessageAdapter.OnMessageLongClick {
@@ -53,7 +54,7 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
 
     private OnMessageLongClick messageLongClick;
 
-    Fragment fragment;
+    Fragment fragment = new CometChatMessageList();
 
     private static AppCompatActivity activity;
 
@@ -62,30 +63,30 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cometchat_message_list);
         activity = this;
-        fragment = new CometChatMessageList();
+
         EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
         EmojiCompat.init(config);
 
-        if (getIntent() != null) {
+        if (getIntent()!=null) {
             Bundle bundle = new Bundle();
 
             bundle.putString(UIKitConstants.IntentStrings.AVATAR, getIntent().getStringExtra(UIKitConstants.IntentStrings.AVATAR));
             bundle.putString(UIKitConstants.IntentStrings.NAME, getIntent().getStringExtra(UIKitConstants.IntentStrings.NAME));
-            bundle.putString(UIKitConstants.IntentStrings.TYPE, getIntent().getStringExtra(UIKitConstants.IntentStrings.TYPE));
+            bundle.putString(UIKitConstants.IntentStrings.TYPE,getIntent().getStringExtra(UIKitConstants.IntentStrings.TYPE));
 
-            if (getIntent().hasExtra(UIKitConstants.IntentStrings.TYPE) &&
+            if (getIntent().hasExtra(UIKitConstants.IntentStrings.TYPE)&&
                     getIntent().getStringExtra(UIKitConstants.IntentStrings.TYPE).equals(CometChatConstants.RECEIVER_TYPE_USER)) {
-                bundle.putString(UIKitConstants.IntentStrings.LINK, getIntent().getStringExtra(UIKitConstants.IntentStrings.LINK));
+                bundle.putString(UIKitConstants.IntentStrings.LINK,getIntent().getStringExtra(UIKitConstants.IntentStrings.LINK));
                 bundle.putString(UIKitConstants.IntentStrings.UID, getIntent().getStringExtra(UIKitConstants.IntentStrings.UID));
                 bundle.putString(UIKitConstants.IntentStrings.STATUS, getIntent().getStringExtra(UIKitConstants.IntentStrings.STATUS));
 
-            } else {
+            }else {
                 bundle.putString(UIKitConstants.IntentStrings.GUID, getIntent().getStringExtra(UIKitConstants.IntentStrings.GUID));
-                bundle.putString(UIKitConstants.IntentStrings.GROUP_OWNER, getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_OWNER));
-                bundle.putInt(UIKitConstants.IntentStrings.MEMBER_COUNT, getIntent().getIntExtra(UIKitConstants.IntentStrings.MEMBER_COUNT, 0));
-                bundle.putString(UIKitConstants.IntentStrings.GROUP_TYPE, getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_TYPE));
-                bundle.putString(UIKitConstants.IntentStrings.GROUP_DESC, getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_DESC));
-                bundle.putString(UIKitConstants.IntentStrings.GROUP_PASSWORD, getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD));
+                bundle.putString(UIKitConstants.IntentStrings.GROUP_OWNER,getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_OWNER));
+                bundle.putInt(UIKitConstants.IntentStrings.MEMBER_COUNT,getIntent().getIntExtra(UIKitConstants.IntentStrings.MEMBER_COUNT,0));
+                bundle.putString(UIKitConstants.IntentStrings.GROUP_TYPE,getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_TYPE));
+                bundle.putString(UIKitConstants.IntentStrings.GROUP_DESC,getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_DESC));
+                bundle.putString(UIKitConstants.IntentStrings.GROUP_PASSWORD,getIntent().getStringExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD));
             }
 
             if (getIntent().hasExtra(UIKitConstants.IntentStrings.MESSAGE)) {
@@ -100,7 +101,7 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode,resultCode,data);
         Log.d(TAG, "onActivityResult: ");
 
     }
@@ -128,8 +129,8 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
 
     @Override
     public void setLongMessageClick(List<BaseMessage> baseMessage) {
-        if (fragment != null)
-            ((OnMessageLongClick) fragment).setLongMessageClick(baseMessage);
+        if (fragment!=null)
+            ((OnMessageLongClick)fragment).setLongMessageClick(baseMessage);
     }
 
     @Override
@@ -143,7 +144,7 @@ public class CometChatMessageListActivity extends AppCompatActivity implements M
     }
 
     public void handleDialogClose(DialogInterface dialog) {
-        ((MessageActionCloseListener) fragment).handleDialogClose(dialog);
+        ((MessageActionCloseListener)fragment).handleDialogClose(dialog);
         dialog.dismiss();
     }
 

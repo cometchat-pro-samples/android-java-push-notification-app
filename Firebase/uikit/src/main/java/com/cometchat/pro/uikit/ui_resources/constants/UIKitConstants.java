@@ -140,7 +140,8 @@ public class UIKitConstants {
         public static final String IS_TITLE_VISIBLE = "IS_TITLE_VISIBLE";
 
         public static final String CREATE_GROUP_VISIBLE = "IS_CREATE_GROUP_VISIBLE";
-        public static final String CALL_TYPE = "CALL_TYPE";
+
+        public static final String ALLOW_CAPTION = "allow_caption";
 
         public static String POLL_QUESTION = "poll_question";
 

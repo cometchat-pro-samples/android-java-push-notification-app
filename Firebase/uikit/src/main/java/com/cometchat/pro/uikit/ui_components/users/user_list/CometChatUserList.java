@@ -52,6 +52,7 @@ import com.cometchat.pro.uikit.ui_settings.enums.UserMode;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.cometchat.pro.uikit.ui_components.shared.cometchatUsers.CometChatUsers;
@@ -311,7 +312,7 @@ public class CometChatUserList extends Fragment {
      * @see UsersRequest
      */
     private void searchUser(String s) {
-        UsersRequest usersRequest = new UsersRequest.UsersRequestBuilder().setSearchKeyword(s).setLimit(100).build();
+        UsersRequest usersRequest = new UsersRequest.UsersRequestBuilder().friendsOnly(UIKitSettings.getUsersMode()==UserMode.FRIENDS).setSearchKeyword(s).setLimit(100).build();
         usersRequest.fetchNext(new CometChat.CallbackListener<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {

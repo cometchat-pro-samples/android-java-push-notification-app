@@ -1,2 +1,3 @@
-include ':app','uikit';
+include ':app'
 rootProject.name='Android Push Notification'
+include ':uikit'

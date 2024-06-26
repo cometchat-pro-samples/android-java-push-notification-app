@@ -1,9 +1,5 @@
 package com.cometchat.pro.uikit.ui_components.calls.callconnection;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.telecom.CallAudioState;
@@ -13,17 +9,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 
 import com.cometchat.pro.constants.CometChatConstants;
 import com.cometchat.pro.core.Call;
 import com.cometchat.pro.core.CometChat;
 import com.cometchat.pro.exceptions.CometChatException;
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatCallActivity;
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatStartCallActivity;
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class CallConnection extends Connection {
