@@ -9,16 +9,13 @@ The CometChat Android [Push Notifications (Extension)](https://www.cometchat.com
 > [!NOTE]
 > If you wish to try Enhanced Push Notifications, please refer to our [Android Enhanced Push Notifications (Beta)](https://github.com/cometchat/cometchat-push-notification-app-android) sample app.
 
+
 ## Pre-requisite :star:
 
 1. Login to the <a href="https://app.cometchat.com/" target="_blank">CometChat Dashboard</a>.
 2. Select an existing app or create a new one.
-3. Go to the credentials section and copy the `Auth` key from the credentials tab.
-4. Go to the "Extensions" section and Enable the Push Notifications extension.
-5. Open the settings for this extension and set the version to Token-based(V2).
-6. Also, save the `FCM Server key` (received from [Firebase Console](https://console.firebase.google.com/)) in the Settings and click on Save.
-7. Copy the `APP_ID`, `REGION`, and `AUTH_KEY` for your app.
-   </br>
+3. Under the Extensions section, enable Push Notifications.
+4. Configure Push Notifications by saving the required FCM credentials.
 
 ## Installation :wrench:
 
@@ -27,15 +24,11 @@ The CometChat Android [Push Notifications (Extension)](https://www.cometchat.com
 
 ## Run the Sample App
 
-To Run the sample push notifications app, do the following changes by Adding **APP_ID**, **AUTH_KEY**, **REGION**, and **google-services.json**
-
-You can obtain your _APP_ID_, _AUTH_KEY_ and _REGION_ from [CometChat Dashboard](https://app.cometchat.com/)
-
-You can Obtain your _google-services.json_ from [Firebase Console](https://console.firebase.google.com/)
+1. To run the sample push notifications app, make the following changes by Adding **APP_ID**, **AUTH_KEY**, **REGION**, and **google-services.json**. You can obtain your **google-services.json** from [Firebase Console](https://console.firebase.google.com/)
 
 - Open the project in Android Studio.
 
-- Replace the `APP_ID`, and `AUTH_KEY`, and `REGION` with your app credentials from [CometChat-Pro Dashboard](https://app.cometchat.io/).
+- Replace the `APP_ID`, and `AUTH_KEY`, and `REGION` with your app credentials from [CometChat Dashboard](https://app.cometchat.com/).
 
 - Add `google-services.json` in **app** directory
 
