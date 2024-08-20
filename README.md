@@ -8,6 +8,9 @@ The CometChat Android Push Notification Sample App is capable of handling push n
 
 The sample app uses Firebase Cloud Messaging (FCM) for delivering push notifications to Android.
 
+> [!NOTE]
+> If you are using Push Notifications (Extension), please refer to our [Android Push Notifications (Extension)](https://github.com/cometchat/cometchat-push-notification-app-android/tree/v4-push-notifications-extension) sample app.
+
 ## Pre-requisite
 
 1. Login to the [CometChat Dashboard](https://app.cometchat.com/).
@@ -29,7 +32,6 @@ The sample app uses Firebase Cloud Messaging (FCM) for delivering push notificat
 9. You should see a push notification for a message and call notification for a call.
 10. Tap on the notification to open the Sample app for message.
 11. Tap on "Accept" to join an incoming call or tap on "Decline" to reject it.
-
 
 ## Help and Support
 
