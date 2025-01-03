@@ -6,6 +6,9 @@
 
 The CometChat Android Push Notification Sample App is capable of handling push notifications for one-on-one (private), group messaging, and even call notifications. This sample app enables users to send and receive text messages, make and receive calls, and effectively displays push notifications for these interactions.
 
+## 🚀 Try the New v5 UI Kit!
+Discover the all-new [v5 UI Kit](https://github.com/cometchat/cometchat-uikit-android/tree/v5), featuring a completely revamped design for enhanced usability and visual appeal. With restructured components, advanced styling options, and a streamlined integration process, v5 offers a seamless, customizable experience tailored to your needs. Try it now and elevate your development workflow!
+
 The sample app uses Firebase Cloud Messaging (FCM) for delivering push notifications to Android.
 
 > [!NOTE]
